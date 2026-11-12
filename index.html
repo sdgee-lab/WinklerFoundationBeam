@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WinklerFoundationBeam: δοκός Winkler σε ελαστικό έδαφος </title>
+<title>WinklerFoundationBeam: δοκός σε ελαστικό έδαφος Winkler</title>
 <style>
 :root {
   --bg: #f3f5f8; --card: #ffffff; --line: #d8dee6; --text: #1a2633; --muted: #5d6b7a;
@@ -150,7 +150,7 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     <p class="hint">Συντεταγμένες κόμβων x [m], χωρισμένες με κόμμα ή κενό. Ταξινομούνται και οι διπλότυπες αφαιρούνται.</p>
     <textarea id="coords" spellcheck="false"></textarea>
     <div class="row"><button id="btnCoords">Εφαρμογή συντεταγμένων</button></div>
-    <p class="hint" style="color:var(--warn)">Η αλλαγή του πλέγματος μηδενίζει τα φορτία, όπως στο αρχικό πρόγραμμα.</p>
+    <p class="hint" style="color:var(--warn)">Η αλλαγή του πλέγματος μηδενίζει τα φορτία.</p>
   </div>
 
   <div class="card">
@@ -191,7 +191,7 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     </div>
     <div class="chartwrap"><svg id="chart" viewBox="0 0 900 340" role="img"></svg></div>
     <div class="summary" id="summary"></div>
-    <p class="hint">Οι θετικές τιμές σχεδιάζονται προς τα κάτω, όπως στο αρχικό πρόγραμμα. Οι ροπές και οι τέμνουσες είναι γραμμικές εντός κάθε στοιχείου μεταξύ των τιμών στα άκρα του (ακριβείς στους κόμβους).</p>
+    <p class="hint">Οι θετικές τιμές σχεδιάζονται προς τα κάτω. Οι ροπές και οι τέμνουσες είναι γραμμικές εντός κάθε στοιχείου μεταξύ των τιμών στα άκρα του (ακριβείς στους κόμβους).</p>
   </div>
 
   <div class="card">
@@ -202,7 +202,6 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
 </main>
 <footer>
   <strong>Αποποίηση ευθύνης:</strong> Η αρχική εφαρμογή (jWinkler, Java) αναπτύχθηκε από τον Φώτη Καραουλάνη. Η παρούσα σελίδα (WinklerFoundationBeam) είναι μετατροπή της σε JavaScript, με διορθωμένο υπολογισμό του ιδίου βάρους και του κέντρου βάρους της τραπεζοειδούς διατομής.
-  Ο επιλυτής έχει ελεγχθεί έναντι του αρχικού κώδικα Java (με τις συμβάσεις του, διαφορά της τάξης του 1e-12 σε σχετικό μέγεθος) και έναντι αναλυτικών λύσεων.
   Τα αποτελέσματα παρέχονται χωρίς καμία εγγύηση και ο χρήστης φέρει την ευθύνη για τον έλεγχο και τη χρήση τους.
   Μονάδες: kN, m. Η σελίδα λειτουργεί εξ ολοκλήρου στον browser και δεν στέλνει δεδομένα πουθενά.
 </footer>
