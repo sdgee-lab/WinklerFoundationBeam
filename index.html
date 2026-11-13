@@ -134,7 +134,7 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
       <option value="rect">Ορθογωνική (Τ)</option>
       <option value="user">Ορισμένη από τον χρήστη (A, I)</option>
     </select>
-    <svg id="secSketch" viewBox="0 0 220 120" style="width:100%;max-width:300px;margin:8px auto 0;display:block"></svg>
+    <svg id="secSketch" viewBox="0 0 320 200" style="width:100%;max-width:360px;margin:8px auto 0;display:block"></svg>
     <div class="grid" id="secFields" style="margin-top:6px"></div>
     <div class="calc" id="secCalc"></div>
   </div>
@@ -143,8 +143,8 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     <h2>Πλέγμα</h2>
     <div class="row" style="margin-top:0">
       <span>Από</span><input type="number" step="any" id="genFrom" value="0">
-      <span>έως</span><input type="number" step="any" id="genTo" value="10">
-      <span>τμήματα</span><input type="number" step="1" min="1" id="genN" value="10">
+      <span>έως</span><input type="number" step="any" id="genTo" value="10"><span>m</span>
+      <span>χωρισμένο σε</span><input type="number" step="1" min="1" id="genN" value="10"><span>τμήματα</span>
     </div>
     <div class="row"><button id="btnGen">Ομοιόμορφο πλέγμα</button></div>
     <p class="hint">Συντεταγμένες κόμβων x [m], χωρισμένες με κόμμα ή κενό. Ταξινομούνται και οι διπλότυπες αφαιρούνται.</p>
@@ -636,23 +636,39 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
   }
 
   function drawSecSketch(t) {
-    var s = '<rect x="20" y="6" width="180" height="98" fill="none" stroke="#9aa6b2" stroke-dasharray="4 3"/>';
-    var blue = 'fill="rgba(11,92,158,.18)" stroke="#0b5c9e" stroke-width="1.6"';
-    if (t === 'trpz') {
-      s += '<path d="M20 104 L200 104 L200 86 L135 58 L135 30 L85 30 L85 58 L20 86 Z" ' + blue + '/>';
-      s += '<text x="110" y="117" text-anchor="middle" font-size="10">b</text><text x="14" y="58" font-size="10" text-anchor="end">h</text>';
-      s += '<text x="110" y="25" font-size="10" text-anchor="middle">b0</text>';
-      s += '<text x="205" y="97" font-size="9">h0</text><text x="205" y="73" font-size="9">h1</text><text x="140" y="46" font-size="9">h2</text>';
-    } else if (t === 'rect') {
-      s += '<path d="M20 104 L200 104 L200 80 L135 80 L135 30 L85 30 L85 80 L20 80 Z" ' + blue + '/>';
-      s += '<text x="110" y="117" text-anchor="middle" font-size="10">b</text><text x="14" y="58" font-size="10" text-anchor="end">h</text>';
-      s += '<text x="110" y="25" font-size="10" text-anchor="middle">b0</text>';
-      s += '<text x="205" y="94" font-size="9">h0</text><text x="140" y="58" font-size="9">h1</text>';
-    } else {
-      s += '<ellipse cx="110" cy="62" rx="62" ry="34" ' + blue + '/>';
-      s += '<text x="110" y="117" text-anchor="middle" font-size="10">b</text><text x="14" y="58" font-size="10" text-anchor="end">h</text>';
-      s += '<text x="110" y="66" text-anchor="middle" font-size="10">A, I</text>';
+    var DIM = '#c4281c', GEO = '#0b5c9e', s = '';
+    function arrowH(x, y, dir) { return '<polygon points="' + x + ',' + y + ' ' + (x + dir * 7) + ',' + (y - 2.6) + ' ' + (x + dir * 7) + ',' + (y + 2.6) + '" fill="' + DIM + '"/>'; }
+    function arrowV(x, y, dir) { return '<polygon points="' + x + ',' + y + ' ' + (x - 2.6) + ',' + (y + dir * 7) + ' ' + (x + 2.6) + ',' + (y + dir * 7) + '" fill="' + DIM + '"/>'; }
+    function ext(x1, y1, x2, y2) { return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + DIM + '" stroke-width=".7" stroke-dasharray="2 2"/>'; }
+    function txt(x, y, str, anchor) {
+      return '<text x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'middle') + '" font-size="12" font-style="italic" font-weight="700" fill="' + DIM +
+        '" stroke="#fff" stroke-width="3" paint-order="stroke" stroke-linejoin="round">' + str + '</text>';
     }
+    function hdim(x1, x2, y, label, ly) { // horizontal dimension, label above or below the line
+      return '<line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '" stroke="' + DIM + '" stroke-width="1.2"/>' + arrowH(x1, y, 1) + arrowH(x2, y, -1) + txt((x1 + x2) / 2, y + ly, label);
+    }
+    function vdim(x, y1, y2, label, lx, anchor) { // vertical dimension
+      return '<line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + y2 + '" stroke="' + DIM + '" stroke-width="1.2"/>' + arrowV(x, y1, 1) + arrowV(x, y2, -1) + txt(x + lx, (y1 + y2) / 2 + 4, label, anchor);
+    }
+    var L = 56, R = 256, top = 16, bot = 170, bx0 = 106, bx1 = 206, ytop = 74; // dashed rectangle (b x h) and web edges
+    var blue = 'fill="rgba(11,92,158,.20)" stroke="' + GEO + '" stroke-width="1.8" stroke-linejoin="round"';
+    s += '<rect x="' + L + '" y="' + top + '" width="' + (R - L) + '" height="' + (bot - top) + '" fill="none" stroke="#8a97a5" stroke-width="1.1" stroke-dasharray="5 3"/>';
+    if (t === 'trpz') {
+      s += '<path d="M' + L + ' ' + bot + ' L' + R + ' ' + bot + ' L' + R + ' 148 L' + bx1 + ' 108 L' + bx1 + ' ' + ytop + ' L' + bx0 + ' ' + ytop + ' L' + bx0 + ' 108 L' + L + ' 148 Z" ' + blue + '/>';
+      s += ext(R, 148, 282, 148) + ext(R, bot, 282, bot) + ext(bx1, 108, 282, 108) + ext(bx1, ytop, 282, ytop);
+      s += vdim(276, 148, bot, 'h0', 6, 'start') + vdim(276, 108, 148, 'h1', 6, 'start') + vdim(276, ytop, 108, 'h2', 6, 'start');
+    } else if (t === 'rect') {
+      s += '<path d="M' + L + ' ' + bot + ' L' + R + ' ' + bot + ' L' + R + ' 148 L' + bx1 + ' 148 L' + bx1 + ' ' + ytop + ' L' + bx0 + ' ' + ytop + ' L' + bx0 + ' 148 L' + L + ' 148 Z" ' + blue + '/>';
+      s += ext(R, 148, 282, 148) + ext(R, bot, 282, bot) + ext(bx1, ytop, 282, ytop);
+      s += vdim(276, 148, bot, 'h0', 6, 'start') + vdim(276, ytop, 148, 'h1', 6, 'start');
+    } else {
+      s += '<ellipse cx="' + (L + R) / 2 + '" cy="' + (top + bot) / 2 + '" rx="' + (R - L) / 2 * 0.86 + '" ry="' + (bot - top) / 2 * 0.74 + '" ' + blue + '/>';
+      s += '<text x="' + (L + R) / 2 + '" y="' + ((top + bot) / 2 + 4) + '" text-anchor="middle" font-size="13" font-weight="700" fill="' + GEO + '">A, I</text>';
+    }
+    // b: width of the contact with the soil (below), h: height used for the soil area (left), b0: web width (above)
+    s += ext(L, bot, L, 192) + ext(R, bot, R, 192) + hdim(L, R, 188, 'b', -5);
+    s += ext(L, top, 22, top) + ext(L, bot, 22, bot) + vdim(28, top, bot, 'h', -6, 'end');
+    if (t !== 'user') s += ext(bx0, ytop, bx0, 54) + ext(bx1, ytop, bx1, 54) + hdim(bx0, bx1, 58, 'b0', -5);
     $('#secSketch').innerHTML = s;
   }
 
@@ -996,7 +1012,7 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     secRows.push(['Εμβαδόν δοκού A', fmt(sec.A, 6) + ' m2'], ['Ροπή αδράνειας I', fmt(sec.I, 6) + ' m4'],
       ['Εμβαδόν εδάφους Au = b·h − A', fmt(sec.Au, 6) + ' m2'], ['Ίδιο βάρος p = A·γb + Au·γs', fmt(pself, 6) + ' kN/m']);
     h += kvRows(secRows) + '</div></div>';
-    h += '<div class="fig"><svg viewBox="0 0 220 120" style="max-width:38mm;margin:0 auto">' + $('#secSketch').innerHTML + '</svg></div>';
+    h += '<div class="fig"><svg viewBox="0 0 320 200" style="max-width:42mm;margin:0 auto">' + $('#secSketch').innerHTML + '</svg></div>';
 
     var nodalRows = [], elemRows = [];
     for (i = 0; i < n; i++) if (model.nodal[i][0] || model.nodal[i][1]) nodalRows.push(i);
@@ -1017,14 +1033,14 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     }
     h += '</div></div>';
 
-    h += '<h2>2. Μοντέλο</h2><div class="fig ch"><svg viewBox="0 0 900 216">' + $('#schematic').innerHTML + '</svg></div>';
+    h += '<h2>2. Μοντέλο</h2><div class="fig ch"><svg viewBox="0 0 900 216" style="width:76%">' + $('#schematic').innerHTML + '</svg></div>';
 
     h += '<h2>3. Σύνοψη αποτελεσμάτων</h2><table><thead><tr><th>Μέγεθος</th><th>Μέγιστο</th><th>στο x [m]</th><th>Ελάχιστο</th><th>στο x [m]</th><th>Μέγ. απόλυτο</th></tr></thead><tbody>';
     ['U', 'M', 'V', 'P'].forEach(function (k) {
       var mm = JW.maxMin(res, k, JW.noiseFloor(model, res, k)), sc = k === 'U' ? 1000 : 1;
       h += '<tr><td>' + esc(TITLES[k]) + ' [' + UNITS[k] + ']</td><td>' + fmt(mm.max * sc, 5) + '</td><td>' + fmt(mm.xMax, 5) + '</td><td>' + fmt(mm.min * sc, 5) + '</td><td>' + fmt(mm.xMin, 5) + '</td><td>' + fmt(mm.absMax * sc, 5) + '</td></tr>';
     });
-    h += '</tbody></table><p class="cap">Μέγιστη πίεση εδάφους Ks·w: ' + fmt(JW.maxMin(res, 'P', JW.noiseFloor(model, res, 'P')).max / sec.b, 5) + ' kN/m2. Οι θετικές τιμές σχεδιάζονται προς τα κάτω. Οι ροπές και οι τέμνουσες είναι γραμμικές εντός κάθε στοιχείου μεταξύ των τιμών στα άκρα του και ακριβείς στους κόμβους.</p>';
+    h += '</tbody></table><p class="cap">Μέγιστη πίεση εδάφους Ks·w: ' + fmt(JW.maxMin(res, 'P', JW.noiseFloor(model, res, 'P')).max / sec.b, 5) + ' kN/m2. Οι θετικές τιμές σχεδιάζονται προς τα κάτω.</p>';
 
     h += '<h2 class="pb">4. Διαγράμματα</h2>';
     ['U', 'M', 'V', 'P'].forEach(function (k) {
