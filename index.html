@@ -108,7 +108,7 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
 <main>
 <aside id="inputs">
   <div class="card">
-    <h2>Γενικά</h2>
+    <h2>Στοιχεία μελέτης</h2>
     <div class="grid" style="grid-template-columns: 90px 1fr;">
       <label for="project">Έργο</label><input id="project" type="text" data-text="project">
       <label for="user">Χρήστης</label><input id="user" type="text" data-text="user">
@@ -121,8 +121,8 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     <div class="grid">
       <label>Συντελεστής εδάφους Ks</label><input type="number" step="any" data-bind="soil.Ks"><span class="unit">kN/m3</span>
       <label>Ειδικό βάρος εδάφους γs</label><input type="number" step="any" data-bind="soil.gamma"><span class="unit">kN/m3</span>
-      <label>Μέτρο ελαστικότητας E</label><input type="number" step="any" data-bind="conc.E"><span class="unit">kN/m2</span>
-      <label>Λόγος Poisson ν</label><input type="number" step="any" data-bind="conc.nu"><span class="unit"></span>
+      <label>Μέτρο ελαστικότητας δοκού E</label><input type="number" step="any" data-bind="conc.E"><span class="unit">kN/m2</span>
+      <label>Λόγος Poisson δοκού ν</label><input type="number" step="any" data-bind="conc.nu"><span class="unit"></span>
       <label>Ειδικό βάρος δοκού γb</label><input type="number" step="any" data-bind="conc.gamma"><span class="unit">kN/m3</span>
     </div>
   </div>
@@ -575,8 +575,6 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
 
   function exampleModel() {
     var m = JW.defaultModel();
-    m.project = 'Παράδειγμα';
-    m.user = 'Γιώργος Παπαδόπουλος';
     m.nodal[5] = [100, 0];
     return m;
   }
@@ -998,8 +996,8 @@ footer { color: var(--muted); font-size: 12.5px; text-align: center; padding: 0 
     h += kvRows([
       ['Συντελεστής εδάφους Ks', fmt(model.soil.Ks, 6) + ' kN/m3'],
       ['Ειδικό βάρος εδάφους γs', fmt(model.soil.gamma, 6) + ' kN/m3'],
-      ['Μέτρο ελαστικότητας E', fmt(model.conc.E, 6) + ' kN/m2'],
-      ['Λόγος Poisson ν', fmt(model.conc.nu, 6)],
+      ['Μέτρο ελαστικότητας δοκού E', fmt(model.conc.E, 6) + ' kN/m2'],
+      ['Λόγος Poisson δοκού ν', fmt(model.conc.nu, 6)],
       ['Ειδικό βάρος δοκού γb', fmt(model.conc.gamma, 6) + ' kN/m3'],
       ['Αριθμός κόμβων / στοιχείων', n + ' / ' + (n - 1)],
       ['Μήκος δοκού', fmt(model.x[n - 1] - model.x[0], 6) + ' m']
